@@ -1,39 +1,28 @@
-#文件路径配置
 file_paths:
-  # 步骤 1: 标签处理脚本 (tag_process.py) 的输入和输出
+  # Step 1: 关键词打标
   step1_input: "input_data.csv"
-  step1_output: "output_tagged.csv"
-  # 关键词库配置文件
+  step1_output: "output_tagged.csv" # 输出：带大类标签的CSV
   keywords_config: "keywords.yaml"
-  # 细分主题库配置文件
+
+  # Step 2: LLM分析情感和细分主题
+  step2_input: "output_tagged.csv"  # 输入：上一步的输出
+  step2_output: "output_topic_sentiment.csv" # 输出：带细分主题和情感的CSV
   topics_config: "topics.yaml"
-  # 步骤 2: LLM分析脚本llm_tag.py的输入和输出
-  # 注意：这个输入文件是上一步的输出
-  step2_input: "output_tagged.csv"
-  step2_output: "output_analysis.json"
-  # 步骤 3: 报告生成脚本generate_report.py的输入和输出
-  # 注意：这个输入文件是上一步的输出
-  step3_input: "output_analysis.json"
-  step3_output: "final_report.json"
 
-# 2. 数据列配置
-# 指定原始数据中需要处理的评论列名
+  # Step 3: 聚合分析与报告生成
+  step3_input: "output_topic_sentiment.csv" # 输入：上一步的输出
+  step3_output: "final_report.json" # 输出：最终JSON报告
+
 data_columns:
-  comment_column_name: "评论"
+  comment_column_name: "评论" # 评论列名
 
-# 大模型API配置,用于 llm_tag.py 和 generate_report.py
 llm_api:
-  api_key: "APIKEY" 
-  base_url: "https://api.siliconflow.cn/v1"
-  tagging_model: "deepseek-ai/DeepSeek-V3" 
-  report_model: "deepseek-ai/DeepSeek-V3" 
+  api_key: "your-api-key" # LLM API 密钥
+  base_url: "https://www.sophnet.com/api/open-apis/v1" # LLM API 基础URL
+  tagging_model: "DeepSeek-V3-Fast" # 关键词打标模型
+  report_model: "DeepSeek-V3-Fast"  # 报告生成模型
 
-# 4. 程序运行参数
-# 控制API调用行为和性能
 execution:
-  # 并发处理的工作线程数
-  max_workers: 2
-  # API调用失败时的重试次数
-  retry_attempts: 3
-  # 每次重试之间的延迟秒数
-  retry_delay: 5
+  max_workers: 2  # 最大并发工作线程数
+  retry_attempts: 10 # 最大重试次数
+  retry_delay: 5 # 重试延迟（秒）
